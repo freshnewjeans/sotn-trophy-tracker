@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Castlevania Requiem — Trophy Tracker</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="SOTN Trophies">
+<meta name="theme-color" content="#f5f5f7">
+<style>
+  :root{
+    --bg:#ececf0; --window:#f5f5f7; --sidebar:rgba(238,238,242,0.72);
+    --card:#ffffff; --card-hover:#f2f2f5; --stroke:rgba(0,0,0,0.08); --stroke2:rgba(0,0,0,0.14);
+    --text:#1d1d1f; --text2:#6e6e73; --text3:#a1a1a6;
+    --accent:#0a84ff; --green:#28c840; --amber:#f5a623; --red:#ff3b30;
+    --gold:#b8860b; --silver:#8e8e93; --bronze:#a06b3d; --platinum:#c8c8d0;
+    --radius:10px; --radius-lg:14px; --shadow:0 24px 70px rgba(0,0,0,0.18);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro Display","Helvetica Neue",Arial,sans-serif;
+    background:radial-gradient(1100px 640px at 82% -8%,#f6e9dc 0%,transparent 55%),radial-gradient(800px 540px at -8% 112%,#e2ecfa 0%,transparent 55%),var(--bg);
+    color:var(--text);-webkit-font-smoothing:antialiased;letter-spacing:-0.01em;
+    display:flex;align-items:center;justify-content:center;padding:24px;min-height:100vh;}
+  .window{width:min(1240px,100%);height:min(880px,96vh);background:var(--window);
+    border-radius:var(--radius-lg);box-shadow:var(--shadow),0 0 0 .5px rgba(0,0,0,.08);
+    display:flex;flex-direction:column;overflow:hidden;}
+  .titlebar{height:52px;flex:0 0 auto;display:flex;align-items:center;gap:14px;padding:0 16px;
+    background:rgba(246,246,249,.72);backdrop-filter:blur(30px) saturate(180%);-webkit-backdrop-filter:blur(30px) saturate(180%);
+    border-bottom:1px solid var(--stroke);}
+  .traffic{display:flex;gap:8px}.traffic span{width:12px;height:12px;border-radius:50%;display:block}
+  .t-red{background:#ff5f57}.t-yellow{background:#febc2e}.t-green{background:#28c840}
+  .ttitle{font-size:13.5px;font-weight:600;display:flex;align-items:center;gap:9px;flex:1;min-width:0}
+  .ttitle .ic{width:22px;height:22px;border-radius:6px;background:linear-gradient(160deg,#8a2b35,#c79a5a);
+    display:grid;place-items:center;font-size:11px;color:#fff;font-weight:800;flex:0 0 auto}
+  .progress-wrap{display:flex;align-items:center;gap:10px}
+  .pct{font-size:12.5px;color:var(--text2);font-variant-numeric:tabular-nums;min-width:74px;text-align:right}
+  .ptrack{width:180px;height:6px;border-radius:99px;background:rgba(0,0,0,.1);overflow:hidden}
+  .pfill{height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,#0a84ff,#64d2ff);transition:width .45s cubic-bezier(.2,.8,.2,1)}
+  .toolbar{flex:0 0 auto;display:flex;align-items:center;gap:12px;padding:10px 16px;border-bottom:1px solid var(--stroke);flex-wrap:wrap}
+  .seg{display:flex;background:rgba(0,0,0,.06);border-radius:8px;padding:2px;gap:2px;flex-wrap:wrap}
+  .seg button{appearance:none;border:0;background:transparent;color:var(--text2);font-size:12.5px;font-weight:500;
+    padding:7px 12px;border-radius:6px;cursor:pointer;font-family:inherit;transition:all .15s ease;min-height:30px}
+  .seg button.active{background:#fff;color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.18)}
+  .search{margin-left:auto;display:flex;align-items:center;gap:7px;background:rgba(0,0,0,.06);border-radius:8px;padding:7px 11px;min-width:200px}
+  .search input{background:transparent;border:0;outline:0;color:var(--text);font-size:13px;font-family:inherit;width:100%;min-height:28px}
+  .search input::placeholder{color:var(--text3)}
+  .body{flex:1;display:flex;min-height:0}
+  .sidebar{flex:0 0 248px;background:var(--sidebar);backdrop-filter:blur(30px) saturate(180%);-webkit-backdrop-filter:blur(30px) saturate(180%);
+    border-right:1px solid var(--stroke);padding:14px 10px;overflow-y:auto}
+  .side-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);padding:8px 10px 6px}
+  .side-item{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;cursor:pointer;font-size:13px;color:var(--text2);margin-bottom:1px;transition:background .12s ease;min-height:34px}
+  .side-item:hover{background:rgba(0,0,0,.05);color:var(--text)}
+  .side-item.active{background:rgba(10,132,255,.18);color:#0a5dc2}
+  .side-item .dot{width:8px;height:8px;border-radius:50%;flex:0 0 auto}
+  .side-item .cnt{margin-left:auto;font-size:11px;color:var(--text3);font-variant-numeric:tabular-nums}
+  .side-item .cnt.done{color:var(--green)}
+  .main{flex:1;overflow-y:auto;padding:22px 26px 90px;min-width:0}
+  .phase-head{margin-bottom:16px}
+  .pk{font-size:12px;font-weight:600;color:var(--accent);letter-spacing:.04em;text-transform:uppercase}
+  .pt{font-size:24px;font-weight:700;letter-spacing:-.02em;margin-top:3px}
+  .pd{font-size:13.5px;color:var(--text2);margin-top:6px;line-height:1.5;max-width:680px}
+  .trophy{background:var(--card);border:1px solid var(--stroke);border-radius:var(--radius);margin-bottom:10px;overflow:hidden;transition:background .15s ease,border-color .15s ease}
+  .trophy:hover{background:var(--card-hover)}
+  .trow{display:flex;align-items:center;gap:13px;padding:13px 15px;cursor:pointer;min-height:52px}
+  .check{width:22px;height:22px;border-radius:50%;flex:0 0 auto;border:2px solid var(--text3);display:grid;place-items:center;position:relative;transition:all .18s ease}
+  .check::after{content:"";position:absolute;inset:-11px;border-radius:50%}
+  .check svg{opacity:0;transform:scale(.5);transition:all .18s ease}
+  .trophy.done .check{background:var(--green);border-color:var(--green)}
+  .trophy.done .check svg{opacity:1;transform:scale(1)}
+  .trophy.done .tn{color:var(--text3);text-decoration:line-through}
+  .tier{width:30px;height:30px;border-radius:8px;flex:0 0 auto;display:grid;place-items:center;font-size:10px;font-weight:700;letter-spacing:.02em}
+  .tier.bronze{background:rgba(160,107,61,.16);color:var(--bronze)}
+  .tier.silver{background:rgba(142,142,147,.16);color:var(--silver)}
+  .tier.gold{background:rgba(184,134,11,.18);color:var(--gold)}
+  .tier.platinum{background:linear-gradient(145deg,#e8e8ed,#9a9aa2);color:#1c1c1e}
+  .tb{flex:1;min-width:0}
+  .tn{font-size:14px;font-weight:600;transition:color .15s}
+  .ts{font-size:12px;color:var(--text3);margin-top:2px;line-height:1.4}
+  .badges{display:flex;gap:6px;flex:0 0 auto;flex-wrap:wrap}
+  .badge{font-size:10.5px;font-weight:600;padding:3px 8px;border-radius:99px;letter-spacing:.03em;text-transform:uppercase}
+  .badge.missable{background:rgba(245,166,35,.18);color:#b26a00}
+  .badge.critical{background:rgba(255,59,48,.16);color:#d70015}
+  .badge.grind{background:rgba(10,132,255,.14);color:#0a6fd6}
+  .badge.story{background:rgba(0,0,0,.05);color:var(--text2)}
+  .chev{color:var(--text3);transition:transform .2s ease;flex:0 0 auto}
+  .trophy.open .chev{transform:rotate(90deg)}
+  .tdetail{max-height:0;overflow:hidden;transition:max-height .28s ease;border-top:0 solid var(--stroke)}
+  .trophy.open .tdetail{max-height:2000px;border-top-width:1px}
+  .tdi{padding:13px 16px 15px 60px;font-size:13px;line-height:1.62;color:var(--text2)}
+  .tdi strong{color:var(--text)}
+  .guide-block{margin-top:6px}
+  .guide-block h4{font-size:12px;color:var(--accent);text-transform:uppercase;letter-spacing:.04em;margin:8px 0 4px}
+  .guide-block p{margin:0 0 7px}
+  .tip{margin-top:8px;padding:9px 12px;border-radius:8px;background:rgba(10,132,255,.08);border-left:3px solid var(--accent);color:#0a5dc2;font-size:12.5px;line-height:1.55}
+  .tip.warn{background:rgba(245,166,35,.10);border-left-color:var(--amber);color:#9c6a00}
+  .tip.crit{background:rgba(255,59,48,.08);border-left-color:var(--red);color:#c21f12}
+  .platinum-card{background:linear-gradient(135deg,rgba(200,200,210,.14),rgba(200,200,210,.03));border:1px solid rgba(120,120,135,.3);border-radius:var(--radius-lg);padding:18px 20px;display:flex;align-items:center;gap:16px;margin-bottom:22px}
+  .platinum-card .medal{width:46px;height:46px;border-radius:12px;flex:0 0 auto;background:linear-gradient(145deg,#e8e8ed,#a8a8b0);display:grid;place-items:center;color:#1c1c1e;font-weight:800;font-size:13px}
+  .platinum-card h3{font-size:16px;font-weight:700}.platinum-card p{font-size:12.5px;color:var(--text2);margin-top:2px}
+  .empty{color:var(--text3);font-size:13px;padding:30px;text-align:center}
+  .footnote{margin-top:30px;font-size:11.5px;color:var(--text3);line-height:1.6;border-top:1px solid var(--stroke);padding-top:14px}
+  .creditbar{flex:0 0 auto;text-align:center;font-size:11px;color:#86868b;padding:8px 0 calc(8px + env(safe-area-inset-bottom));border-top:1px solid var(--stroke);background:rgba(246,246,249,.6)}
+  .maphdr{margin-bottom:14px}.maphdr .pk{color:var(--accent)}
+  .legend{display:flex;flex-wrap:wrap;gap:8px 16px;background:var(--card);border:1px solid var(--stroke);border-radius:var(--radius);padding:12px 16px;margin-bottom:18px;font-size:12px;color:var(--text2)}
+  .lg{display:flex;align-items:center;gap:6px}
+  .sw{width:14px;height:14px;border-radius:3px;display:inline-block;border:1px solid rgba(0,0,0,.15);flex:0 0 auto}
+  .mapcard{background:var(--card);border:1px solid var(--stroke);border-radius:var(--radius);padding:16px;margin-bottom:16px}
+  .mapcard h3{font-size:14px;font-weight:600;margin-bottom:4px}
+  .mapcard .cap{font-size:12px;color:var(--text3);margin-bottom:12px;line-height:1.5}
+  .mapsvg{width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .mapsvg svg{display:block;max-width:none}
+  .guidepage{max-width:820px}
+  .guide-section{background:var(--card);border:1px solid var(--stroke);border-radius:var(--radius);padding:18px 20px;margin-bottom:16px}
+  .guide-section h2{font-size:16px;font-weight:700;margin-bottom:8px}
+  .guide-section .sub{font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:12px}
+  .guide-section h3{font-size:13px;font-weight:600;margin:12px 0 6px;color:var(--text)}
+  .guide-section ul{margin:0 0 8px 18px}.guide-section li{margin-bottom:5px;font-size:13px;line-height:1.55;color:var(--text2)}
+  .guide-section p{font-size:13px;line-height:1.6;color:var(--text2);margin-bottom:8px}
+  @media (max-width:820px){
+    body{padding:0;align-items:stretch}.window{height:100vh;border-radius:0;width:100%}
+    .sidebar{position:fixed;top:0;left:0;bottom:0;width:280px;z-index:50;transform:translateX(-102%);transition:transform .25s ease;box-shadow:2px 0 30px rgba(0,0,0,.15)}
+    .sidebar.open{transform:translateX(0)}
+    .scrim{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:40;opacity:0;pointer-events:none;transition:opacity .25s}
+    .scrim.show{opacity:1;pointer-events:auto}
+    .hamburger{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:8px;background:rgba(0,0,0,.05);border:0;color:var(--text)}
+    .ptrack{width:90px}
+    .main{padding:16px 14px 90px}
+    .tdi{padding-left:16px}
+    .badges{display:none}
+  }
+  @media (min-width:821px){.hamburger{display:none}.scrim{display:none}}
+</style>
+</head>
+<body>
+<div class="scrim" id="scrim"></div>
+<div class="window">
+  <div class="titlebar">
+    <button class="hamburger" id="hamburger" aria-label="Menu">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+    </button>
+    <div class="traffic"><span class="t-red"></span><span class="t-yellow"></span><span class="t-green"></span></div>
+    <div class="ttitle"><span class="ic">SOTN</span><span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Castlevania Requiem — Trophy Tracker</span></div>
+    <div class="progress-wrap"><div class="ptrack"><div class="pfill" id="pfill"></div></div><div class="pct" id="ppct">0 / 44</div></div>
+  </div>
+  <div class="toolbar">
+    <div class="seg" id="seg">
+      <button data-f="all" class="active">All</button><button data-f="sotn">SOTN</button><button data-f="rondo">Rondo</button>
+      <button data-f="missable">Missables</button><button data-f="todo">To Do</button>
+    </div>
+    <div class="search"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>
+      <input id="search" type="search" placeholder="Search trophies…"></div>
+  </div>
+  <div class="body">
+    <aside class="sidebar" id="sidebar"></aside>
+    <main class="main" id="main"></main>
+  </div>
+  <div class="creditbar">Created and designed by Kevin Lim Fung Yen</div>
+</div>
+
+<script>
+/* ================= TROPHY DATA ================= */
+const PLATINUM={n:"A Miserable Little Pile of Secrets",t:"Unlock all trophies in the collection."};
+const PHASES=[
+{id:"rondo1",game:"rondo",kick:"Act 1 · Rondo of Blood",title:"First Run — Richter",desc:"Play Rondo of Blood through to Dracula. Rescue every girl on the way — several trophies are missable if you skip them.",trophies:[
+{n:"Prayers Answered",t:"Rescue Tera.",b:["story"],tip:"Tera is on a timer in the burning room at the end of Stage 1 — reach her before the flames kill her.",g:"Tera is trapped in a burning room at the end of Stage 1 of Rondo of Blood, and she is on a strict timer — the flames will kill her if you take too long. Reach the end of Stage 1, defeat the enemies guarding the area, and get to Tera before the fire consumes her. Use holy water to clear swarms and dash toward her. If she dies, restart the stage and try again — do not continue, or you permanently miss her for that run. Best time: your very first Rondo playthrough, because you will naturally reach Stage 1. Common mistake: wasting time fighting optional enemies instead of sprinting to Tera."},
+{n:"Just What the Doctor Ordered",t:"Rescue Iris.",b:["story"],tip:"Iris is hidden behind a secret wall in Stage 3.",g:"Iris is locked inside a hidden room in Stage 3 of Rondo of Blood. In the middle of the stage, look for a breakable wall in the background scenery (a slightly different-colored or cracked section). Use your sub-weapon — the axe or holy water works best, or the wall-destroying item if you have it — to break it open, then enter the secret room and free Iris. Best time: when you clear Stage 3 the first time. Common mistake: running straight through the stage and never noticing the cracked wall; explore every alcove."},
+{n:"Nothing but Annette",t:"Rescue Annette.",b:["story","missable"],tip:"Annette is in Stage 5' alternate route; take the alternate path.",g:"Annette is held at the end of the ALTERNATE Stage 5 route (Stage 5'), not the direct path. At the stage-select screen, choose the branch/alternate 5' route. Fight through to the end, defeat the boss guarding her, and free Annette. If you take the direct Stage 5 path you will not find her and must replay via the alternate branch. Best time: your first run, after you unlock the alternate route. Common mistake: taking the direct path and assuming she is there."},
+{n:"The Young Huntress",t:"Rescue Maria Renard.",b:["story","missable"],tip:"Maria is behind a breakable wall in Stage 2.",g:"Maria is trapped behind a breakable wall in Stage 2 of Rondo of Blood. In Stage 2, find the hidden passage (a cracked section of wall), break it with your sub-weapon, and enter to free her. She joins you as a playable character afterward. Best time: first playthrough of Stage 2. Common mistake: missing the breakable wall because it blends in; look for the crack."},
+{n:"Intercepted!",t:"Catch a boss's Magic Crystal before it hits the ground.",b:["story"],tip:"Stand under the boss at the kill moment and catch the falling crystal mid-air.",g:"During boss fights, bosses release a Magic Crystal at certain moments (commonly at a stagger or when defeated). To catch it, position yourself DIRECTLY UNDER the boss at the exact moment the crystal spawns and move to grab it mid-air before it touches the ground. If you miss, it falls and you must retry the stage or fight. Best time: on any early boss you can predict (the Ferryman or Stage 1 boss works well). Common mistake: standing too far from the drop point so you cannot reach the falling crystal in time."},
+{n:"Whip it Good",t:"Defeat 15 enemies with Richter's extended whip.",b:["grind"],tip:"Kills during the extended whip animation count; grind weak early enemies.",g:"Hold the attack button down so Richter performs the extended/lunging whip (the whip extends forward with a distinctive animation). Only kills dealt by the EXTENDED portion of the whip count toward the 15. Grind this on weak early enemies in Stage 1 or 2 — repeatedly kill them with the extended whip until the counter hits 15. Best time: Stage 1 or 2 on your first run. Common mistake: killing enemies with the basic short whip, which does not count."},
+{n:"Come no more",t:"Test the Ferryman's patience.",b:["missable"],tip:"Mash/talk to the ferryman repeatedly until he reacts.",g:"On the stage where you ride the Ferryman (the boat stage), interact with him repeatedly — keep pressing the talk/interact button over and over until he gets visibly annoyed and reacts with a special animation or line of dialogue. The trophy unlocks the moment he gives that unique annoyed reaction. Best time: when you reach the boat stage in your first run. Common mistake: talking to him once or twice only; you must keep pestering him several times."},
+{n:"Vampire Killer",t:"Clear any stage with a No-Damage Bonus.",b:["story"],tip:"Save before an easy stage and clear it untouched.",g:"Complete any stage without taking a single hit. The no-damage bonus is awarded on the stage-clear screen. To make this easy, save your game, then replay an early, easy stage (Stage 1 or 2) and play extremely carefully — memorize enemy positions, use holy water to clear paths, and avoid unnecessary risks. If you take any hit, restart the stage rather than continuing. Best time: early in the game when stages are simple. Common mistake: playing the hard later stages where a clean run is much less realistic."},
+{n:"You don't belong in this world!",t:"Defeat Dracula as Richter.",b:["story"],tip:"Story completion of your first run.",g:"This is simply completing your first Rondo of Blood playthrough as Richter — reach the final stage, fight Dracula's final form, and defeat him. It is the story-completion trophy and cannot be missed as long as you finish the game. Best time: your first run. Common mistake: none — just beat the final boss."}]},
+{id:"rondo2",game:"rondo",kick:"Act 1 · Rondo of Blood",title:"Rondo Cleanup",desc:"Two remaining Rondo trophies: beat Dracula as Maria, then reach 100% map completion.",trophies:[
+{n:"Not to be Underestimated",t:"Defeat Dracula as Maria.",b:["story"],tip:"Start a new game as Maria and beat Dracula.",g:"After you have rescued Maria (The Young Huntress), she becomes selectable as a character. Start a NEW GAME from the title screen and choose Maria. Maria plays very differently — she uses dove projectiles and magic instead of a whip — so adapt: stay mobile, use her ranged doves to chip away at bosses, and learn Dracula's final-battle patterns. Clear the game as Maria to unlock. Best time: after your first Richter run, in a second playthrough. Common mistake: playing Maria like Richter and getting punished for melee approaches."},
+{n:"The Full Belmonty",t:"Complete 100% of Rondo of Blood.",b:["grind"],tip:"Take every alternate route and hidden room; rarest trophy in the set.",g:"Reveal 100% of the game's map. This requires taking EVERY alternate route and entering EVERY secret room across all stages, including routes that only open when certain girls are rescued. Use a 100% map guide and go stage by stage, checking off every alternate branch and hidden room. This is the rarest and most time-consuming trophy in the set. Best time: after your initial runs, using the stage-select to revisit stages and clear every route. Common mistake: assuming one clean playthrough covers everything — you must deliberately revisit stages to hit alternate paths."}]},
+{id:"sotn1",game:"sotn",kick:"Act 2 · Symphony of the Night",title:"Castle Entrance & Royal Chapel",desc:"Early castle. Grab every easy secret before you have the abilities to reach them again.",trophies:[
+{n:"Close Associates",t:"Defeat Slogra and Gaibon.",b:["story"],tip:"First boss pair at the castle entrance.",g:"The first boss fight in Symphony of the Night, in the castle entrance shortly after the prologue. Two bosses appear together — Slogra (spear wielder) and Gaibon (winged fire breather). Fight them with your starting equipment; dodge their pincer attacks, focus one at a time, and use the gap between their attacks. They are unmissable story bosses. Best time: the opening minutes of SOTN. Common mistake: getting cornered between both; keep moving and separate them."},
+{n:"...To Forgive, Divine",t:"Visit the confessional in the Royal Chapel.",b:["story","missable"],tip:"Enter the curtained confessional booth in the chapel.",g:"In the Royal Chapel, find the confessional — a small booth with a curtain on the side of the chapel hall. Walk into it / interact with it. The trophy pops the moment you visit it. Best time: your first visit to the Royal Chapel so you do not forget to come back. Common mistake: passing the confessional without entering because it looks like background scenery."},
+{n:"A Bird's Life",t:"View the circle of life under a telescope.",b:["missable"],tip:"Use the telescope and let the full bird scene play out.",g:"In the telescope room in the Outer Wall / Clock Tower area, approach the telescope and use the view interaction. Keep watching the full animation — the scene shows birds and the cycle of life — until it plays out completely. The trophy unlocks when the full scene finishes. Best time: whenever you reach that room in the early castle. Common mistake: tapping away before the scene finishes; you must let the whole animation run."},
+{n:"Chock Full",t:"Successfully eat a peanut.",b:["story"],tip:"Equip and use a peanut; let the eating animation finish.",g:"Obtain the Peanut food item (a food item found in the castle), place it in your inventory, equip it, and USE it. Alucard must complete the full eating animation for it to count. Best time: any point after you find a peanut. Common mistake: using the item and moving before the eating animation completes."},
+{n:"Napsylvania: Lethargy of DisChair",t:"Sit in a chair and fall asleep.",b:["missable"],tip:"Sit in the library chair and wait ~10–15 seconds.",g:"Find a chair — the easiest one is in the Long Library, near the Master Librarian's room (there is a chair in the library background). Sit in it via the interact action and stay still for roughly 10–15 seconds. Alucard will fall asleep and the Zzz animation plays; the trophy pops when he dozes off. Best time: your first visit to the Long Library. Common mistake: moving too soon; you must wait without input for the sleep animation."},
+{n:"Bat Friends Forever!!",t:"Make friends with the Bat Familiar.",b:["story"],tip:"Equip the Bat Familiar relic and summon it.",g:"Find the Bat Familiar relic in the Long Library, equip it in a relic slot, and summon it. The little bat joins you as a familiar and follows you. Equipping and summoning it once is enough. Best time: when you explore the Long Library. Common mistake: grabbing the relic but never equipping it."}]},
+{id:"sotn2",game:"sotn",kick:"Act 2 · Symphony of the Night",title:"Abilities & Exploration",desc:"Collect movement relics and all the quirky off-the-beaten-path trophies before the inverted castle.",trophies:[
+{n:"What Could It Be?",t:"Obtain the Holy Symbol (underwater).",b:["story"],tip:"Defeat Scylla in the underwater area to get it.",g:"Progress to the underwater/water-locked area of the castle and defeat the Scylla boss guarding the Holy Symbol. Collecting the Holy Symbol relic lets Alucard breathe and travel freely underwater — this opens the water areas. It is a story-given relic; you receive it as you progress. Best time: in the natural story order, once you reach the water zone. Common mistake: trying to explore underwater zones before getting this and drowning."},
+{n:"Wish I Was A Baller",t:"Equip the Secret Boots.",b:["story"],tip:"Find and equip the hidden Secret Boots relic.",g:"The Secret Boots are a hidden relic found in a secret room in the castle (commonly in the Marble Gallery or a hidden-wall room). Find them, equip them, and wearing them makes Alucard appear taller. Equip once and the trophy pops. Best time: whenever you find them during exploration. Common mistake: leaving a hidden room unexplored because you did not break the wall."},
+{n:"Whip First, Axe Questions Later",t:"Become an Axe Knight.",b:["missable"],tip:"Equip the full Axe Knight armor set at once.",g:"Collect the full Axe Knight armor set — the Axe Knight body armor and the matching headpiece — which are hidden in the castle, then equip ALL pieces at once. When the complete set is worn, Alucard transforms into an Axe Knight. Best time: before the endgame, while you still have all the pieces available. Common mistake: owning the pieces but never equipping the full set together."},
+{n:"Aria of Sorrow",t:"Hear the Fairy Familiar sing.",b:["story"],tip:"Keep the Fairy familiar out until it sings.",g:"Obtain and equip the Fairy Familiar relic, then keep it summoned and active for a while as you explore. Eventually the fairy will begin singing a song; let the song play out and the trophy unlocks when you hear it. Best time: mid-castle exploration, after you find the Fairy relic. Common mistake: dismissing the familiar before it has a chance to sing — keep it out for a few minutes."},
+{n:"Make It Rain",t:"Make money with the Jewel Sword.",b:["story"],tip:"Swing the Jewel Sword; it produces gold.",g:"Find the Jewel Sword, equip it, and swing it at enemies. Each successful hit produces coins/gold. Swing it enough times to generate money and the trophy unlocks. Best time: mid-game, and it doubles as a gold-farming tool for the Duplicator grind. Common mistake: using a different weapon and never actually swinging the Jewel Sword."},
+{n:"Cowstlevania: Portrait of Mooin'",t:"Summon a cow with Shield Rod/Mablung Sword.",b:["missable"],tip:"Equip Shield Rod + Mablung and do the shield special.",g:"Equip the Shield Rod in one hand and the Mablung Sword in the other. Use the Shield Rod's special attack (the shield spell) while the Mablung is equipped — this summons a cow. Trigger it once to unlock. Best time: before beating Richter / before entering the Inverted Castle to avoid any lockout. Common mistake: not having the Shield Rod and Mablung equipped together; the cow only appears with both."},
+{n:"Spelling Bee",t:"Cast every Alucard spell at least once.",b:["story"],tip:"Cast each spell (Hellfire, Soul Steal, Tetra Spirit, etc.) once.",g:"Alucard has multiple spells that you must each cast once. The spells include (not exhaustive): Hellfire, Soul Steal, Tetra Spirit, Gravity / summon, Dark Metamorphosis, Summon Spirit, and the various familiar/transformation spells. Open your spell list, then cast each spell a single time in combat (spells need MP and are cast via the spell input). Best time: mid-game when you have collected several spells. Common mistake: forgetting an obscure spell; use a spell checklist and tick each one off."},
+{n:"TRACULA...?!",t:"Equip the full Alucart set.",b:["story"],tip:"Collect and equip Alucart Sword, Shield and Mail together.",g:"Collect all three pieces of the \"Alucart\" set — Alucart Sword, Alucart Shield, and Alucart Mail. These drop from specific enemies or are found in hidden rooms. Equip all three at once and the trophy pops. Best time: mid-game, once you have gathered all three. Common mistake: holding the pieces but never equipping all three simultaneously."},
+{n:"School of Hard Knocks",t:"Surprise the Master Librarian.",b:["story","missable"],tip:"Break the ceiling above his room and drop down on him.",g:"In the Master Librarian's room, transform into bat (or wolf) form and break through the CEILING above his room, then drop down onto him from above. The moment you land on him from the ceiling, the trophy pops. Best time: your first visit to the Librarian's room, once you have the bat form. Common mistake: walking in through the door normally — you must come from above."},
+{n:"Vampire's Greatest Hits",t:"Obtain all transformation relics and upgrades.",b:["story"],tip:"Collect Bat, Wolf, Mist forms plus their upgrades.",g:"Collect every transformation relic and its upgrade: the Bat form plus its upgrade, the Wolf form plus its upgrade, and the Mist form plus its upgrade (Power of Sire / Mist upgrade, etc.). These are spread throughout the castle. Once you own them all, the trophy unlocks. Best time: mid-to-late exploration, as you naturally collect them. Common mistake: never returning for a late-game upgrade relic."}]},
+{id:"sotn3",game:"sotn",kick:"Act 2 · Symphony of the Night",title:"Boss Rush & the Dawn Warriors",desc:"Work through the mid-castle bosses. The Dawn Warriors trophy is EASY TO MISS — do it here.",trophies:[
+{n:"Goodbye Yellow Brick Road",t:"Defeat all three denizens of Oz.",b:["story"],tip:"Defeat the Scarecrow, Tin Man, and Lion in the hidden Oz area.",g:"Fight and defeat the three \"Oz\"-themed mini-bosses — the Scarecrow, the Tin Man, and the Lion — located in a hidden sub-area of the castle (the underground/Oz-themed secret zone). Defeat all three. Best time: when you discover the hidden Oz area during exploration. Common mistake: missing the hidden entrance to the Oz sub-area entirely; look for breakable walls."},
+{n:"You Are Tearing Me Apart, Lisa!",t:"See through the Succubus.",b:["story"],tip:"Defeat the Succubus boss in the dungeon/clock-tower area.",g:"Fight and defeat the Succubus boss in the dungeon / clock-tower area of the castle. She is an unmissable story boss — beating her fulfills the \"see through her deception\" condition. Best time: in the natural story order. Common mistake: none — just win the fight; manage her HP-drain and dodge her attacks."},
+{n:"Continue Simon's Quest",t:"Defeat all classic bosses and get Dracula's relics.",b:["story"],tip:"Defeat the classic-style bosses (Frankenstein, Mummy, Medusa) and take the relics.",g:"Defeat the classic Castlevania bosses — including the Frankenstein's monster, the Mummy, Medusa, and similar classic-style fights — and collect the Dracula relics they guard. These are story bosses; clearing all of them and claiming their relics unlocks the trophy. Best time: as you progress through the castle in story order. Common mistake: skipping a classic boss fight and never collecting one of the relics."},
+{n:"Dawn of the Dead",t:"Summon each Dawn Warrior at least once.",b:["missable","critical"],tip:"CRITICAL: do this before fighting Richter / entering the inverted castle.",g:"The Dawn (Guardian) familiar can summon several distinct \"Dawn Warrior\" spirits. You must trigger each different one at least once. THIS IS MISSABLE — you must do it before defeating Richter / before the game locks you out of the pre-inverted-castle content. Best time: EARLY in your SOTN playthrough, as soon as you have the Dawn familiar, so you cannot lose access. Common mistake: waiting until after the Richter fight and losing the ability to trigger them."}]},
+{id:"sotn4",game:"sotn",kick:"Act 2 · Symphony of the Night",title:"The Richter Choice — CRITICAL",desc:"This is the branching point. Get the missable 'bad ending' trophy BEFORE you use the Holy Glasses.",trophies:[
+{n:"The Wolves Have All Gone",t:"Defeat Richter WITHOUT the Holy Glasses.",b:["missable","critical"],tip:"CRITICAL: save first, kill Richter without glasses, then reload and use them.",g:"MISSABLE — the bad-ending trophy. SAVE YOUR GAME FIRST. Before taking Maria's Holy Glasses, go fight Richter directly and defeat him WITHOUT the glasses. This triggers the bad ending and pops the trophy. Then RELOAD your save, take the Holy Glasses from Maria, and do the good ending. Best time: at the Richter fight, before you ever accept the glasses. Common mistake: taking the glasses immediately and permanently losing the bad-ending trophy on that save — always save before this fight."},
+{n:"Flip It and Reverse It",t:"Defeat Richter with the Holy Glasses, unlock the Inverted Castle.",b:["story"],tip:"Target the floating orb (Shaft) behind Richter, not Richter.",g:"After securing the bad-ending trophy, reload your save, get the Holy Glasses from Maria, and fight Richter again. During the battle, target the floating orb (Shaft) that appears behind him — hit the orb, not Richter. Defeating the orb defeats Richter and unlocks the Inverted Castle. This is the good-ending path. Best time: immediately after the bad-ending trophy. Common mistake: attacking Richter instead of the orb behind him, so the fight never resolves correctly."}]},
+{id:"sotn5",game:"sotn",kick:"Act 3 · Inverted Castle",title:"Inverted Castle",desc:"The upside-down castle. Push to Galamoth and Dracula.",trophies:[
+{n:"Let The Bodies Hit The Floor",t:"Defeat Granfaloon.",b:["story"],tip:"Mandatory inverted-castle boss; attack the core.",g:"In the Inverted Castle, fight and defeat Granfaloon, the huge mass-of-bodies boss. It is a mandatory inverted-castle boss with a large hitbox; keep attacking its core and avoid being swarmed. Best time: in the natural inverted-castle progression. Common mistake: standing in the middle of its attacks; keep moving around it."},
+{n:"Dracula's Curse",t:"Defeat zombie Trevor, Sypha, and Grant.",b:["story"],tip:"Fight the zombie Belmont trio; kill them one by one.",g:"In the Inverted Castle, fight the trio of zombie Belmonts — zombie Trevor, zombie Sypha, and zombie Grant — together. It is a story boss in the inverted castle. Focus them one at a time, use area attacks, and manage your HP against three attackers. Best time: natural inverted-castle progression. Common mistake: spreading damage across all three; kill them one by one."},
+{n:"Finish What Kid Dracula Started",t:"Defeat Galamoth.",b:["story"],tip:"Hidden boss in the inverted castle; find his room.",g:"Find and defeat Galamoth, a hidden boss in the Inverted Castle located in a specific hidden room. He is required for full completion. Best time: during inverted-castle completionist play. Common mistake: missing his hidden room; check the inverted castle map for the hidden boss chamber."},
+{n:"Lisa, forgive me...",t:"Defeat Dracula in the Inverted Castle Center.",b:["story"],tip:"Final boss of the inverted castle; bring your best gear.",g:"The final boss of the Inverted Castle — travel to the center of the inverted castle and defeat Dracula in his final form. This completes the main inverted-castle story. Best time: after clearing the inverted castle's bosses. Common mistake: none — this is the closing boss; bring your best gear and items."}]},
+{id:"sotn6",game:"sotn",kick:"Act 3 · Cleanup",title:"Grinds & 100%",desc:"The long tail. Map completion, enemy list, the 500k Duplicator, and Crissaegrim farming.",trophies:[
+{n:"Running on Schmooze Control",t:"Obtain the Crissaegrim.",b:["grind"],tip:"Rare drop from Schmoo in the inverted castle; keep farming.",g:"The Crissaegrim is a RARE drop from the Schmoo enemy, which spawns in the Inverted Castle. Farm the Schmoo by killing it repeatedly, then leave and re-enter the room to respawn it, and repeat until it drops the Crissaegrim. It is the best sword in the game and takes patience — expect a long farming grind. Best time: in the inverted castle, once you can reliably kill Schmoos. Common mistake: giving up too early; the drop rate is very low, so keep farming."},
+{n:"From Axe Knight to Zombie",t:"Complete the Master Librarian's Enemy List.",b:["grind"],tip:"Defeat every enemy (missables excluded) and hunt any \"?\" blanks.",g:"Fill the entire bestiary in the Master Librarian's enemy list by defeating every enemy in the game (the game excludes missable enemies from the requirement). Check the list for any \"?\" blanks and hunt down the missing enemies by visiting their spawn areas. Best time: near the end of your playthrough, once you have seen most of the castle. Common mistake: not cross-checking the list and assuming you have everything."},
+{n:"Scientific Progress goes BOINK!",t:"Purchase the Duplicator (500,000 gold).",b:["grind"],tip:"Save 500,000 gold and buy it from the Master Librarian; farm gold early.",g:"Save up 500,000 gold and buy the Duplicator from the Master Librarian's shop. This is the single longest grind in the game — start accumulating gold EARLY. The Jewel Sword is an excellent gold-farming tool: swing it at enemies to generate coins. Farm gold steadily so you reach 500k. Best time: throughout the playthrough; start farming early. Common mistake: spending gold on other items and never saving toward the 500k."},
+{n:"Technicolor Dreams",t:"Equip Joseph's Cloak and set custom colors.",b:["grind"],tip:"Equip the cloak and apply a custom color palette.",g:"Find and equip Joseph's Cloak, then open the character color/palette editor (the name-entry / color customization screen) and set a custom color palette for Alucard. Once you apply custom colors while wearing the cloak, the trophy pops. Best time: once you find Joseph's Cloak in exploration. Common mistake: equipping the cloak but not actually applying a custom color palette."},
+{n:"Map Legend",t:"Reach 200.6% map completion.",b:["grind"],tip:"Reveal every room in both castles; the .6% is tiny hidden rooms.",g:"Fully reveal 200.6% of the map — both the normal castle and the Inverted Castle, including every hidden wall, breakable block, mist door, and secret room. The \".6%\" represents the tiny hidden secret rooms. Use a 200.6% map checklist and methodically cross off every room in both castles. Best time: the very end of your playthrough, after collecting all relics and forms so you can reach everything. Common mistake: missing tiny hidden rooms; use a map guide and verify every single one."},
+{n:"Shafted",t:"Play as Richter and defeat Shaft in the Inverted Castle.",b:["story"],tip:"Beat the game as Alucard to unlock Richter, then clear as Richter.",g:"After beating the game, Richter becomes a selectable character. Start a playthrough as Richter, play through to reach the Inverted Castle, and defeat Shaft there. This requires a full Richter run up to the inverted castle. Best time: after your main completion, as a bonus Richter run. Common mistake: not unlocking Richter first (you must beat the game as Alucard)."}]}
+];
+
+/* ================= MAP DATA (schematic reference maps) ================= */
+function R(id,x,y,w,h,label,cls){return{id,x,y,w,h,label,cls:cls||"normal"}}
+const LEGEND=[["normal","Room"],["secret","Hidden/Secret Room"],["boss","Boss"],["save","Save Point"],["warp","Teleport/Warp"],["mist","Mist Door"],["entrance","Entrance"]];
+const COLORS={normal:"#e6e6eb",secret:"#f5e1b8",boss:"#f3c4c0",save:"#c7e6c7",warp:"#bfdcf2",mist:"#d9c6ec",entrance:"#cfd8cf"};
+const STROKE={normal:"#c7c7cc",secret:"#c99a3e",boss:"#c0392b",save:"#2e8b57",warp:"#2f6fb3",mist:"#7a4f9e",entrance:"#5a8a5a"};
+const SOTN_MAPS=[
+{title:"SOTN — Entrance / Prologue",cap:"Starting area. Slogra & Gaibon boss, first save room, early corridor.",rooms:[
+R("a",20,20,90,56,"Entrance","entrance"),R("b",150,20,110,56,"Corridor"),R("c",300,20,110,90,"Slogra &\nGaibon","boss"),R("d",150,110,110,56,"Save","save"),R("e",300,140,110,56,"To Marble\nGallery","entrance")],conns:[["a","b"],["b","c"],["b","d"],["d","e"]]},
+{title:"SOTN — Marble Gallery",cap:"Hidden wall to secret room, warp room.",rooms:[
+R("a",20,20,110,60,"From\nEntrance","entrance"),R("b",170,20,110,60,"Main Hall"),R("c",320,20,110,70,"Secret Room\n(break wall)","secret"),R("d",170,120,110,60,"Warp","warp"),R("e",320,120,110,60,"Richter\n(route)","boss")],conns:[["a","b"],["b","c"],["b","d"],["b","e"]]},
+{title:"SOTN — Long Library",cap:"Bat relic, Master Librarian (drop through ceiling), sleep chair.",rooms:[
+R("a",20,20,110,60,"Entrance"),R("b",170,20,130,60,"Library\nHall"),R("c",340,20,110,60,"Bat Familiar\nRelic","secret"),R("d",170,120,130,60,"Master\nLibrarian","boss"),R("e",20,120,110,60,"Sleep\nChair","secret"),R("f",340,120,110,60,"Ceiling\ngap above D","secret")],conns:[["a","b"],["b","c"],["b","d"],["a","e"],["d","f"]]},
+{title:"SOTN — Royal Chapel",cap:"Confessional booth, bell-tower hidden rooms.",rooms:[
+R("a",20,20,110,60,"Entrance"),R("b",170,20,110,60,"Chapel"),R("c",320,20,110,60,"Confessional","secret"),R("d",170,120,110,60,"Bell Tower"),R("e",320,120,110,60,"Hidden Room\n(break wall)","secret")],conns:[["a","b"],["b","c"],["b","d"],["d","e"]]},
+{title:"SOTN — Outer Wall / Clock Tower",cap:"Telescope room (A Bird's Life), clock boss, hidden rooms.",rooms:[
+R("a",20,20,110,60,"Entrance"),R("b",170,20,110,60,"Outer Wall"),R("c",320,20,110,60,"Telescope\nRoom","secret"),R("d",170,120,110,60,"Clock\nTower"),R("e",320,120,110,60,"Clock Boss","boss"),R("f",470,120,110,60,"Hidden Room","secret")],conns:[["a","b"],["b","c"],["b","d"],["d","e"],["e","f"]]},
+{title:"SOTN — Castle Keep (Top)",cap:"The tiny hidden rooms that cause the missing 0.6%, Richter fight.",rooms:[
+R("a",20,20,110,60,"Entrance"),R("b",170,20,110,60,"Keep Hall"),R("c",320,20,110,60,"Richter\nFight","boss"),R("d",170,120,130,50,"Tiny Hidden\nRoom (.6%)","secret"),R("e",20,120,130,50,"Tiny Hidden\nRoom (.6%)","secret")],conns:[["a","b"],["b","c"],["b","d"],["b","e"]]},
+{title:"SOTN — Underground Caverns",cap:"Water zones, Scylla boss / Holy Symbol, underwater secrets.",rooms:[
+R("a",20,20,110,60,"Entrance"),R("b",170,20,110,60,"Caverns"),R("c",320,20,110,70,"Scylla /\nHoly Symbol","boss"),R("d",170,120,110,60,"Underwater\nSecret","secret"),R("e",320,120,110,60,"Water\nZone","entrance")],conns:[["a","b"],["b","c"],["b","d"],["c","e"]]},
+{title:"SOTN — Abandoned Mine",cap:"Breakable walls and hidden rooms.",rooms:[
+R("a",20,20,110,60,"Entrance"),R("b",170,20,110,60,"Mine"),R("c",320,20,110,60,"Hidden Room\n(break wall)","secret"),R("d",170,120,110,60,"Deep Mine"),R("e",320,120,110,60,"Secret Room","secret")],conns:[["a","b"],["b","c"],["b","d"],["d","e"]]},
+{title:"SOTN — Colosseum",cap:"The arena and hidden rooms around it.",rooms:[
+R("a",20,20,110,60,"Entrance"),R("b",170,20,110,60,"Arena","boss"),R("c",320,20,110,60,"Hidden Room","secret"),R("d",170,120,110,60,"Back Rooms"),R("e",320,120,110,60,"Secret Room","secret")],conns:[["a","b"],["b","c"],["b","d"],["d","e"]]},
+{title:"SOTN — Catacombs",cap:"The hidden Oz / denizens of Oz sub-area.",rooms:[
+R("a",20,20,110,60,"Entrance"),R("b",170,20,110,60,"Catacombs"),R("c",320,20,110,60,"Oz Sub-Area\n(break wall)","secret"),R("d",320,130,110,60,"Oz Bosses\n(Scarecrow/Tin/Lion)","boss")],conns:[["a","b"],["b","c"],["c","d"]]},
+{title:"SOTN — Anti-Technique (Top)",cap:"Top-right secret zone, hidden rooms.",rooms:[
+R("a",20,20,110,60,"Entrance"),R("b",170,20,110,60,"Anti-\nTechnique"),R("c",320,20,110,60,"Hidden Room","secret"),R("d",170,120,110,60,"Top Secret\nRoom","secret")],conns:[["a","b"],["b","c"],["b","d"]]}
+];
+const INV_MAPS=[
+{title:"Inverted — Entrance",cap:"Inverted starting area and boss.",rooms:[
+R("a",20,20,110,60,"Entrance","entrance"),R("b",170,20,110,60,"Inverted Hall"),R("c",320,20,110,60,"Boss","boss"),R("d",170,120,110,60,"Hidden Room","secret")],conns:[["a","b"],["b","c"],["b","d"]]},
+{title:"Inverted — Marble Gallery",cap:"Schmoo farm room (Crissaegrim drop).",rooms:[
+R("a",20,20,110,60,"Entrance"),R("b",170,20,110,60,"Inverted\nGallery"),R("c",320,20,110,60,"Schmoo\nFarm Room","boss"),R("d",170,120,110,60,"Hidden Room","secret")],conns:[["a","b"],["b","c"],["b","d"]]},
+{title:"Inverted — Library",cap:"Inverted library secrets.",rooms:[
+R("a",20,20,110,60,"Entrance"),R("b",170,20,110,60,"Inverted\nLibrary"),R("c",320,20,110,60,"Hidden Room","secret"),R("d",170,120,110,60,"Boss Room","boss")],conns:[["a","b"],["b","c"],["b","d"]]},
+{title:"Inverted — Royal Chapel",cap:"Granfaloon boss.",rooms:[
+R("a",20,20,110,60,"Entrance"),R("b",170,20,110,60,"Inverted\nChapel"),R("c",320,20,110,60,"Granfaloon","boss"),R("d",170,120,110,60,"Hidden Room","secret")],conns:[["a","b"],["b","c"],["b","d"]]},
+{title:"Inverted — Outer Wall / Clock Tower",cap:"Galamoth hidden boss room.",rooms:[
+R("a",20,20,110,60,"Entrance"),R("b",170,20,110,60,"Inverted\nTower"),R("c",320,20,110,60,"Galamoth\n(hidden)","boss"),R("d",470,20,110,60,"Hidden Room","secret"),R("e",170,120,110,60,"Secrets","secret")],conns:[["a","b"],["b","c"],["b","d"],["b","e"]]},
+{title:"Inverted — Center",cap:"Final Dracula fight.",rooms:[
+R("a",20,20,110,60,"Entrance"),R("b",170,20,110,60,"Inverted\nCenter"),R("c",320,20,110,70,"Dracula\nFinal","boss"),R("d",170,120,110,60,"Hidden Room","secret")],conns:[["a","b"],["b","c"],["b","d"]]},
+{title:"Inverted — Catacombs",cap:"Inverted catacomb secrets.",rooms:[
+R("a",20,20,110,60,"Entrance"),R("b",170,20,110,60,"Inverted\nCatacombs"),R("c",320,20,110,60,"Hidden Room","secret"),R("d",170,120,110,60,"Boss Room","boss")],conns:[["a","b"],["b","c"],["b","d"]]}
+];
+const RONDO_MAPS=[
+{title:"Rondo — Stage 1 (Village)",cap:"Tera rescue (timed, burning room).",rooms:[
+R("a",20,20,110,60,"Start","entrance"),R("b",170,20,110,60,"Village"),R("c",320,20,110,60,"Boss"),R("d",470,20,130,60,"Tera Rescue\n(TIMED)","secret")],conns:[["a","b"],["b","c"],["c","d"]]},
+{title:"Rondo — Stage 2 (Streets)",cap:"Maria rescue behind breakable wall.",rooms:[
+R("a",20,20,110,60,"Start","entrance"),R("b",170,20,110,60,"Streets"),R("c",320,20,110,60,"Boss"),R("d",170,120,130,60,"Maria Rescue\n(break wall)","secret")],conns:[["a","b"],["b","c"],["b","d"]]},
+{title:"Rondo — Stage 3 (Chapel)",cap:"Iris hidden room.",rooms:[
+R("a",20,20,110,60,"Start","entrance"),R("b",170,20,110,60,"Chapel"),R("c",320,20,110,60,"Boss"),R("d",470,20,130,60,"Iris Rescue\n(hidden room)","secret")],conns:[["a","b"],["b","c"],["c","d"]]},
+{title:"Rondo — Stage 4 & 4' (Underground)",cap:"Alternate 4' branch shown; Death boss.",rooms:[
+R("a",20,20,110,60,"Start","entrance"),R("b",170,20,110,60,"Stage 4\nMain"),R("c",320,20,110,60,"Death\nBoss","boss"),R("d",320,140,130,60,"Stage 4'\nALTERNATE","secret")],conns:[["a","b"],["b","c"],["b","d"]]},
+{title:"Rondo — Stage 5 & 5' (Approach)",cap:"Annette rescued on alternate 5' route.",rooms:[
+R("a",20,20,110,60,"Start","entrance"),R("b",170,20,110,60,"Stage 5\nMain"),R("c",320,20,110,60,"Boss"),R("d",320,140,130,60,"Stage 5'\nALTERNATE —\nAnnette","secret")],conns:[["a","b"],["b","c"],["b","d"]]},
+{title:"Rondo — Stage 6 (Shaft's Keep)",cap:"Shaft boss.",rooms:[
+R("a",20,20,110,60,"Start","entrance"),R("b",170,20,110,60,"Keep"),R("c",320,20,110,60,"Shaft\nBoss","boss"),R("d",170,120,110,60,"Hidden Room","secret")],conns:[["a","b"],["b","c"],["b","d"]]},
+{title:"Rondo — Stage 7 (Clock Tower)",cap:"Alternate branch at the top + secret path.",rooms:[
+R("a",20,20,110,60,"Start","entrance"),R("b",170,20,110,60,"Tower"),R("c",320,20,110,60,"Boss"),R("d",320,140,130,60,"Alternate\nTop Branch","secret"),R("e",170,140,110,60,"Secret Path","secret")],conns:[["a","b"],["b","c"],["b","d"],["b","e"]]},
+{title:"Rondo — Stage 8 (Final / Dracula)",cap:"Dracula final boss.",rooms:[
+R("a",20,20,110,60,"Start","entrance"),R("b",170,20,110,60,"Final\nCastle"),R("c",320,20,110,60,"Dracula","boss")],conns:[["a","b"],["b","c"]]}
+];
+
+/* ================= MAP GUIDE TEXT ================= */
+const MAPGUIDE=[
+{title:"Symphony of the Night — 200.6% Map Complete",intro:"200.6% means fully revealing every room in BOTH the normal castle (100.6%) and the Inverted Castle (100%), including every hidden room behind breakable walls, breakable ceilings/floors, and mist doors. The \".6%\" is the tiny hidden rooms.",sections:[
+{h:"Relics & Forms you need first",items:["Bat form + Bat upgrade (fast flight)","Wolf form (running speed)","Mist form + Power of Mist upgrade (pass through mist doors / grates)","Holy Symbol (underwater breathing)","Gravity Boots / jump relics to reach high rooms","A weapon or sub-weapon that breaks walls (and the ability to break floors/ceilings)","Advice: collect ALL forms before your completionist sweep — you cannot reveal everything without them."]},
+{h:"Step-by-step strategy",items:["Sweep 1: walk every reachable room in the normal castle to reveal the map.","Break every breakable wall, ceiling, and floor you find.","Use Mist to pass through every mist door (marked purple).","Check the corners of every room — a room only counts when FULLY revealed.","Do the same full sweep in the Inverted Castle.","Verify on the in-game map that no rooms remain black/unrevealed."]},
+{h:"Normal castle — hidden rooms by area",items:["Entrance: hidden wall near the first corridor; the opening room.","Marble Gallery: breakable wall to a secret room; warp room.","Long Library: Bat relic room; the ceiling above the Master Librarian; the upper hidden library rooms.","Royal Chapel: confessional booth; bell-tower hidden rooms.","Outer Wall / Clock Tower: telescope room; gear/clock hidden rooms.","Castle Keep (top): the tiny hidden rooms near the top — a usual cause of the missing 0.6%.","Underground Caverns: underwater secret rooms; Scylla's room.","Abandoned Mine: breakable-wall hidden rooms.","Colosseum: hidden rooms around the arena.","Catacombs: the hidden Oz sub-area.","Anti-Technique area: top-right secret zone."]},
+{h:"Inverted castle — hidden rooms by area",items:["Mirror every normal area, but reach it via the inverted routes.","Inverted Marble Gallery: the Schmoo farm room (Crissaegrim drop).","Inverted Outer Wall / Clock Tower: Galamoth's hidden boss room.","Inverted Center: the final Dracula arena and surrounding secrets.","Inverted Catacombs and other zones each hold inverted-only secret rooms."]},
+{h:"Why you fall short (troubleshooting)",items:["Missing tiny hidden rooms — the .6% — near the top of the castle.","Missing a mist door (must have the Mist + upgrade).","Not breaking a specific ceiling or floor.","Missing a hidden room behind a boss area.","Not fully revealing a room (the whole room must be revealed on the map)."]}]},
+{title:"Rondo of Blood — 100% Map Complete",intro:"Rondo's 100% means revealing every room by traversing ALL alternate routes and hidden rooms across every stage. Map completion counts rooms visited, so you MUST take every branch path — including alternate routes that only open when you have saved the right girls.",sections:[
+{h:"How alternate routes work",items:["Several stages have TWO versions: the direct path and an alternate (\"?\") path — e.g. Stage 4/4', Stage 5/5', and a clock-tower branch.","To reach 100% you must clear BOTH versions of every branching stage.","Rescuing Tera, Iris, Annette, and Maria can open alternate routes / change stage access — do a run rescuing all four, then revisit stages via stage-select to clear every branch.","This is the \"The Full Belmonty\" trophy."]},
+{h:"Stage-by-stage checklist",items:["Stage 1 (village): rescue Tera (timed burning room).","Stage 2 (streets): rescue Maria (breakable wall).","Stage 3 (chapel): rescue Iris (hidden room).","Stage 4 AND 4': clear both the main path and the alternate 4' (underground/water, Death boss).","Stage 5 AND 5': clear both; the alternate 5' is where Annette is rescued.","Stage 6 (Shaft's keep): clear the Shaft boss.","Stage 7 (clock tower): take the alternate branch at the top AND the secret path.","Stage 8 (final castle): defeat Dracula to finish the game."]},
+{h:"Common mistakes",items:["Clearing only the direct path on a branching stage.","Finishing the game before revisiting stages via stage-select to mop up alternate routes.","Not entering every hidden room on a stage.","100% Rondo is the rarest trophy in the set — the alternate routes are the usual source of missing percentage."]}]}
+];
+
+/* ================= STATE & RENDER ================= */
+const KEY="sotn_trophy_path_static_v1";
+let state={}; try{state=JSON.parse(localStorage.getItem(KEY)||"{}");}catch(e){state={};}
+let view="trophies", activePhase="all", filter="all", query="";
+function save(){try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){}}
+function isDone(id){return !!state[id];}
+function total(){let n=1;PHASES.forEach(p=>n+=p.trophies.length);return n;}
+function done(){let n=0;PHASES.forEach(p=>p.trophies.forEach(t=>{if(isDone(p.id+"::"+t.n))n++;}));if(isDone("platinum"))n++;return n;}
+
+function tier(name){
+  if(name===PLATINUM.n)return"platinum";
+  const g=["Finish What Kid Dracula Started","Map Legend","The Full Belmonty","Scientific Progress goes BOINK!","From Axe Knight to Zombie"];
+  if(g.includes(name))return"gold";
+  const s=["Dawn of the Dead","Cowstlevania: Portrait of Mooin'","TRACULA...?!","Running on Schmooze Control","Technicolor Dreams","Not to be Underestimated"];
+  if(s.includes(name))return"silver";return"bronze";
+}
+
+function renderSidebar(){
+  const sb=document.getElementById("sidebar");
+  let h='<div class="side-label">Walkthrough</div>';
+  h+=side("all","All Trophies","#8e8e93",total(),done());
+  h+='<div class="side-label">Rondo of Blood</div>';
+  PHASES.filter(p=>p.game==="rondo").forEach(p=>h+=side(p.id,p.title,"#e05d5d",p.trophies.length,p.trophies.filter(t=>isDone(p.id+"::"+t.n)).length));
+  h+='<div class="side-label">Symphony of the Night</div>';
+  PHASES.filter(p=>p.game==="sotn").forEach(p=>h+=side(p.id,p.title,"#3f8fd0",p.trophies.length,p.trophies.filter(t=>isDone(p.id+"::"+t.n)).length));
+  h+='<div class="side-label">Reference</div>';
+  h+=side("mapguide","Map Guide","#8e8e93",0,0);
+  h+=side("sotnmaps","SOTN Maps","#3f8fd0",0,0);
+  h+=side("rondomaps","Rondo Maps","#e05d5d",0,0);
+  sb.innerHTML=h;
+  sb.querySelectorAll(".side-item").forEach(el=>el.onclick=()=>{setView(el.dataset.id);document.getElementById("sidebar").classList.remove("open");document.getElementById("scrim").classList.remove("show");});
+}
+function side(id,title,color,total,done){
+  const act=(view===id||(view==="trophies"&&activePhase===id))?" active":"";
+  const cnt = id==="mapguide"||id==="sotnmaps"||id==="rondomaps" ? "" : `<span class="cnt ${done===total&&total>0?'done':''}">${done}/${total}</span>`;
+  return `<div class="side-item${act}" data-id="${id}"><span class="dot" style="background:${color}"></span>${title}${cnt}</div>`;
+}
+
+function visiblePhases(){
+  let list=PHASES.slice();
+  if(filter==="sotn")list=list.filter(p=>p.game==="sotn");
+  else if(filter==="rondo")list=list.filter(p=>p.game==="rondo");
+  if(activePhase!=="all")list=list.filter(p=>p.id===activePhase);
+  return list;
+}
+function renderTrophies(){
+  const m=document.getElementById("main");
+  let h="";
+  const pd=isDone("platinum");
+  h+=`<div class="platinum-card" style="${pd?'border-color:#2e8b57':''}"><div class="medal">Pt</div><div><h3>${PLATINUM.n}</h3><p>${PLATINUM.t}</p></div></div>`;
+  let shown=0;
+  visiblePhases().forEach(p=>{
+    let rows=p.trophies.map(t=>{
+      const id=p.id+"::"+t.n,dn=isDone(id);
+      if(filter==="missable"&&!t.b.includes("missable"))return"";
+      if(filter==="todo"&&dn)return"";
+      if(query&&!(t.n.toLowerCase().includes(query)||t.t.toLowerCase().includes(query)))return"";
+      shown++;
+      const ti=tier(t.n);
+      let bd=t.b.map(b=>{
+        const map={missable:"Missable",critical:"Critical",grind:"Grind",story:"Story"};
+        return`<span class="badge ${b}">${map[b]}</span>`;
+      }).join("");
+      return`<div class="trophy ${dn?'done':''}" data-id="${id}">
+        <div class="trow"><div class="check"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0b0b0d" stroke-width="4"><path d="M5 13l4 4L19 7"/></svg></div>
+        <div class="tier ${ti}">${ti==="platinum"?"Pt":ti[0].toUpperCase()}</div>
+        <div class="tb"><div class="tn">${t.n}</div><div class="ts">${t.t}</div></div>
+        <div class="badges">${bd}</div>
+        <svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></div>
+        <div class="tdetail"><div class="tdi">
+          <strong>${t.t}</strong>
+          ${t.b.includes("critical")?`<div class="tip crit">⚠ CRITICAL — ${t.tip}</div>`:(t.b.includes("missable")?`<div class="tip warn">⚠ Missable — ${t.tip}</div>`:`<div class="tip">Tip: ${t.tip}</div>`)}
+          <div class="guide-block"><h4>How to unlock</h4><p>${t.g}</p></div>
+        </div></div></div>`;
+    }).join("");
+    if(!rows)return;
+    h+=`<div class="phase-head"><div class="pk">${p.kick}</div><div class="pt">${p.title}</div><div class="pd">${p.desc}</div></div>${rows}`;
+  });
+  if(shown===0)h+=`<div class="empty">No trophies match this view.</div>`;
+  h+=`<div class="footnote">Castlevania Requiem (PS4 / playable on PS5). 44 trophies total — 1 platinum, 3 gold, 12 silver, 28 bronze. Tick a trophy to save it in this browser. Critical missables: do them before beating Richter / entering the Inverted Castle.</div>`;
+  m.innerHTML=h;
+  m.querySelectorAll(".trophy").forEach(row=>{
+    const id=row.dataset.id;
+    row.querySelector(".trow").onclick=e=>{
+      if(e.target.closest(".check")){
+        state[id]=!state[id];
+        if(PHASES.every(p=>p.trophies.every(t=>isDone(p.id+"::"+t.n))))state["platinum"]=true;
+        save();renderAll();
+      }else row.classList.toggle("open");
+    };
+  });
+}
+
+function renderMapSVG(map){
+  let maxX=20,maxY=20;
+  map.rooms.forEach(r=>{maxX=Math.max(maxX,r.x+r.w);maxY=Math.max(maxY,r.y+r.h);});
+  const W=maxX+40,H=maxY+40;
+  let s=`<svg viewBox="0 0 ${W} ${H}" width="${W}" xmlns="http://www.w3.org/2000/svg">`;
+  s+=`<rect x="0" y="0" width="${W}" height="${H}" fill="#fbfbfd"/>`;
+  map.conns.forEach(c=>{
+    const a=map.rooms.find(r=>r.id===c[0]),b=map.rooms.find(r=>r.id===c[1]);
+    const ax=a.x+a.w/2,ay=a.y+a.h/2,bx=b.x+b.w/2,by=b.y+b.h/2;
+    s+=`<line x1="${ax}" y1="${ay}" x2="${bx}" y2="${by}" stroke="#b9b9c0" stroke-width="3"/>`;
+  });
+  map.rooms.forEach(r=>{
+    const fill=COLORS[r.cls],st=STROKE[r.cls];
+    const dash=(r.cls==="secret"||r.cls==="mist")?' stroke-dasharray="6,4"':"";
+    s+=`<rect x="${r.x}" y="${r.y}" width="${r.w}" height="${r.h}" rx="6" fill="${fill}" stroke="${st}" stroke-width="2"${dash}/>`;
+    const lines=r.label.split("\n");
+    const fs=Math.min(12,Math.max(9,r.w/11));
+    let tspans="";
+    lines.forEach((l,i)=>{tspans+=`<tspan x="${r.x+r.w/2}" dy="${i===0?(-(lines.length-1)*(fs+2)/2):(fs+2)}">${l}</tspan>`;});
+    s+=`<text x="${r.x+r.w/2}" y="${r.y+r.h/2}" fill="#333" font-size="${fs}" font-weight="600" text-anchor="middle" font-family="-apple-system,Segoe UI,Arial">${tspans}</text>`;
+  });
+  s+="</svg>";
+  return s;
+}
+function renderMaps(maps,title){
+  const m=document.getElementById("main");
+  let h=`<div class="maphdr"><div class="pk">Drawn Maps</div><div class="pt">${title}</div></div>`;
+  h+=`<div class="legend">${LEGEND.map(l=>`<div class="lg"><span class="sw" style="background:${COLORS[l[0]]};border-color:${STROKE[l[0]]}"></span>${l[1]}</div>`).join("")}</div>`;
+  maps.forEach(map=>{
+    h+=`<div class="mapcard"><h3>${map.title}</h3><div class="cap">${map.cap}</div><div class="mapsvg">${renderMapSVG(map)}</div></div>`;
+  });
+  m.innerHTML=h;
+}
+function renderMapGuide(){
+  const m=document.getElementById("main");
+  let h=`<div class="maphdr"><div class="pk">Reference</div><div class="pt">Map Guide</div></div><div class="guidepage">`;
+  MAPGUIDE.forEach(sec=>{
+    h+=`<div class="guide-section"><h2>${sec.title}</h2><p class="sub">${sec.intro}</p>`;
+    sec.sections.forEach(s=>{h+=`<h3>${s.h}</h3><ul>${s.items.map(i=>`<li>${i}</li>`).join("")}</ul>`;});
+    h+=`</div>`;
+  });
+  h+=`</div>`;
+  m.innerHTML=h;
+}
+
+function renderProgress(){
+  const d=done(),t=total();
+  document.getElementById("pfill").style.width=(d/t*100)+"%";
+  document.getElementById("ppct").textContent=d+" / "+t;
+}
+function setView(v){
+  if(v==="mapguide")view="mapguide";
+  else if(v==="sotnmaps")view="sotnmaps";
+  else if(v==="rondomaps")view="rondomaps";
+  else {view="trophies";activePhase=v;}
+  renderAll();
+}
+function renderMain(){
+  if(view==="mapguide")renderMapGuide();
+  else if(view==="sotnmaps")renderMaps(SOTN_MAPS,"Symphony of the Night Maps");
+  else if(view==="rondomaps")renderMaps(RONDO_MAPS,"Rondo of Blood Maps");
+  else renderTrophies();
+}
+function renderAll(){renderProgress();renderSidebar();renderMain();}
+
+document.getElementById("seg").querySelectorAll("button").forEach(b=>{
+  b.onclick=()=>{document.querySelectorAll("#seg button").forEach(x=>x.classList.remove("active"));b.classList.add("active");filter=b.dataset.f;renderAll();};
+});
+document.getElementById("search").addEventListener("input",e=>{query=e.target.value.toLowerCase().trim();renderMain();});
+document.getElementById("hamburger").onclick=()=>{document.getElementById("sidebar").classList.add("open");document.getElementById("scrim").classList.add("show");};
+document.getElementById("scrim").onclick=()=>{document.getElementById("sidebar").classList.remove("open");document.getElementById("scrim").classList.remove("show");};
+renderAll();
+</script>
+</body>
+</html>
