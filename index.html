@@ -132,6 +132,13 @@
   .sc-tag.rescue{background:rgba(245,166,35,.16);color:#b26a00}
   .sc-tag.boss{background:rgba(255,59,48,.14);color:#d70015}
   .sc-cap{font-size:12.5px;color:var(--text2);line-height:1.55;margin-top:4px}
+  .realmap-card{background:var(--card);border:1px solid var(--stroke);border-radius:var(--radius);overflow:hidden;margin-bottom:16px}
+  .realmap-card a.rm-link{display:block;background:#0b0b0f;border-bottom:1px solid var(--stroke)}
+  .realmap-card img{display:block;width:100%;height:auto;object-fit:contain;cursor:zoom-in}
+  .realmap-body{padding:12px 15px}
+  .realmap-body h3{font-size:14px;font-weight:600;margin:0 0 6px}
+  .realmap-body p{font-size:12.5px;color:var(--text2);line-height:1.6;margin:4px 0 0}
+  .rm-hint{display:inline-block;font-size:10.5px;font-weight:600;padding:2px 8px;border-radius:99px;background:rgba(10,132,255,.12);color:#0a6fd6;text-transform:uppercase;letter-spacing:.03em;margin-top:8px}
   @media (max-width:820px){
     body{padding:0;align-items:stretch}.window{height:100vh;border-radius:0;width:100%}
     .sidebar{position:fixed;top:0;left:0;bottom:0;width:280px;z-index:50;transform:translateX(-102%);transition:transform .25s ease;box-shadow:2px 0 30px rgba(0,0,0,.15)}
@@ -429,6 +436,21 @@ function renderMaps(maps,title){
   });
   m.innerHTML=h;
 }
+function renderSotnMaps(){
+  const m=document.getElementById("main");
+  const maps=[
+    {src:"img/sotn/sotn-normal-map.jpg",title:"Normal Castle — Full Map",cap:"The complete first (normal) castle at full map completion — the upper half of the 200.6% total. Use it to confirm every room is uncovered. Tap the image to open it full-resolution and pinch-zoom."},
+    {src:"img/sotn/sotn-inverted-map.jpg",title:"Inverted Castle — In-Game Map",cap:"The actual in-game INVERTED CASTLE map screen. Every room mirrored from the normal castle; follow this while exploring the second half. Tap to open full-res."},
+    {src:"img/sotn/sotn-full-2006.jpg",title:"Full 200.6% — Normal + Inverted",cap:"Both castles combined into the complete 200.6% layout (Inverted on top, Normal below) — the true end-to-end map you work toward. Tap to open full-res."}
+  ];
+  let h=`<div class="maphdr"><div class="pk">Reference</div><div class="pt">Symphony of the Night Maps</div></div><div class="guidepage">`;
+  h+=`<div class="guide-section"><h2>Exact in-game full maps</h2><p class="sub">The real SOTN castle maps — normal, inverted, and the full 200.6% composite. Tap any image to open it full-size on your phone, then pinch to zoom and trace your exploration.</p></div>`;
+  maps.forEach(mm=>{
+    h+=`<div class="realmap-card"><a class="rm-link" href="${mm.src}" target="_blank" rel="noopener"><img src="${mm.src}" alt="${mm.title}" loading="lazy"></a><div class="realmap-body"><h3>${mm.title}</h3><p>${mm.cap}</p><span class="rm-hint">Tap to open full-size</span></div></div>`;
+  });
+  h+=`</div>`;
+  m.innerHTML=h;
+}
 function renderRondoStages(){
   const m=document.getElementById("main");
   let h=`<div class="maphdr"><div class="pk">Reference</div><div class="pt">Rondo of Blood Maps</div></div><div class="guidepage">`;
@@ -465,7 +487,7 @@ function setView(v){
 }
 function renderMain(){
   if(view==="mapguide")renderMapGuide();
-  else if(view==="sotnmaps")renderMaps(SOTN_MAPS,"Symphony of the Night Maps");
+  else if(view==="sotnmaps")renderSotnMaps();
   else if(view==="rondomaps")renderRondoStages();
   else renderTrophies();
 }
