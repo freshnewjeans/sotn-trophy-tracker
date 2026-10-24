@@ -1,0 +1,42 @@
+Castlevania: Symphony of the Night (Requiem) - Trophy Screenshot Manifest
+Generated: 2026-10-24
+Folder: C:\Users\Dell\Doubao\chats\2026-10-16\new-chat\sotn-trophy-tracker\img\sotn\
+Status legend: OK = downloaded & Read-verified real in-game screenshot | SKIPPED = no compliant frame found after 2-3+ refined attempts | REUSED = existing file, no download
+
+All OK images are genuine SOTN 2D pixel-art in-game frames (HUD visible) or genuine in-game cutscene/dialogue/menu frames.
+Every downloaded file verified: JPEG signature FFD8 + visual Read check. No fan art, wallpaper, box art, render, or non-SOTN art accepted.
+
+ 1. Close Associates            | sotn-meet-maria.jpg        | OK     | In-game Maria dialogue cutscene: "Wait. Are you human? What are you doing here?" over the clock room, Maria in green and Alucard.
+ 2. ...To Forgive, Divine       | sotn-confessional.jpg      | OK     | Royal Chapel confessional booth: Alucard seated, purple curtain divider, confessor figure; HUD 3.5/69 visible.
+ 3. A Bird's Life              | sotn-telescope.jpg         | OK     | Outer Wall telescope room with the large telescope apparatus on its mount; HUD 204/42 visible.
+ 4. Chock Full                 | sotn-peanut.jpg            | SKIPPED| No clean real Peanut eating/inventory frame found; candidates were mobile-port overlays or wrong-item menus (repeated refined attempts).
+ 5. Napsylvania                | sotn-chair-sleep.jpg       | SKIPPED| Only fan art of Alucard dozing surfaced; no real PS1 frame of the library chair sleep exists in accessible sources.
+ 6. Bat Friends Forever!!      | sotn-bat-transform.jpg     | OK     | Alucard in bat form flying through the Long Library bookshelves; HUD 190/112 visible.
+ 7. What Could It Be?          | sotn-holy-symbol.jpg       | OK     | Underground Caverns pool room: Alucard on an icy ledge above the deep pool, relic on a pedestal at the water line; HUD 122/114.
+ 8. Wish I Was A Baller        | sotn-secret-boots.jpg      | OK     | Underground Caverns giant waterfall room (Secret Boots location); Alucard airborne against the water sheet; HUD 109/114.
+ 9. Whip First, Axe Questions Later | sotn-axearmor.jpg      | OK     | Colosseum combat: armored Axe Knight with on-screen "Axe Knight" name banner (axe-knight armor look); HUD 143/20.
+10. Aria of Sorrow             | sotn-faerie-sing.jpg       | OK     | Alucard with the blonde-winged Faerie familiar in a stone passage; HUD 163/121.
+11. Make It Rain               | sotn-jewel-sword.jpg       | OK     | In-game equipment menu: Jewel Sword equipped with the gem stash (Zircon 99, Aquamarine 57, Turquoise 38, ... Diamond 6).
+12. Cowstlevania               | sotn-cow-summon.jpg        | SKIPPED| Only a standalone cropped cow sprite (no HUD/room/Alucard) found; no in-game summon frame exists in accessible sources.
+13. Spelling Bee               | sotn-spell-cast.jpg        | OK     | Soul Steal cast: four blue soul-skulls rising toward Alucard; HUD 270/165.
+14. TRACULA...?!               | sotn-alucart-set.jpg       | SKIPPED| No frame of the full Alucart set equipped; sources had only a 14x14 icon, default-armor demos, or art.
+15. School of Hard Knocks      | sotn-master-librarian.jpg  | OK     | Master Librarian at his desk under the Long Library bookshelves, Alucard on the right ledge.
+16. Vampire's Greatest Hits    | sotn-transformation-relics.jpg | OK  | Relics menu with Soul of Wolf selected alongside Form of Mist ("Transform into Wolf", Toggle button).
+17. Goodbye Yellow Brick Road  | sotn-oz-monsters.jpg       | OK     | "Lion" enemy (Oz) lunging at Alucard among the Forbidden Library bookshelves; green nameplate + HUD 342/196.
+18. You Are Tearing Me Apart, Lisa! | sotn-richter-prologue.jpg | OK  | Prologue Richter (blue) vs Dracula in the throne room casting fireballs; RICHTER hearts 35 and boss HP bars visible.
+19. Continue Simon's Quest    | sotn-classic-boss.jpg      | OK     | Clock Tower fight with flying Medusa Heads; "Medusa Head" nameplate; HUD 114/85.
+20. Dawn of the Dead           | sotn-sword-of-dawn.jpg     | OK     | Alucard in bat form beside the floating Sword of Dawn on the crescent ledge under a giant blue skull; HUD 787/217.
+21. The Wolves Have All Gone  | sotn-warg.jpg              | OK     | Large dark Warg wolf confronting Alucard in a red-curtained hall; HUD 71 visible.
+22. Flip It and Reverse It    | sotn-richter-boss.jpg      | OK     | Richter-boss pre-battle dialogue ("So be it, vampire hunter..."), Alucard portrait; Richter and Alucard face off in the throne chamber.
+23. Let The Bodies Hit The Floor | sotn-granfaloon.jpg      | OK     | Alucard fighting the Granfaloon corpse-ball mass in the Catacombs, released corpses crowding in; HUD 225/126. (Verified: trophy = defeat Granfaloon.)
+24. Dracula's Curse            | sotn-doppleganger.jpg      | OK     | Alucard vs the zombie Fake Trevor/Sypha/Grant trio emerging from coffins (Inverted Coliseum). (Verified: trophy = the Fake trio, not Death.)
+25. Finish What Kid Dracula Started | sotn-galamoth.jpg      | OK     | Galamoth boss fight: giant gold-armored boss towering over Alucard; "Galamoth" name label; HUD visible.
+26. Lisa, forgive me...        | sotn-final-dracula.jpg     | OK     | Final Dracula boss fight (multi-armed four-skull form) in the Inverted Castle Center; HUD 853/210.
+27. Running on Schmooze Control | sotn-crissaegrim.jpg      | OK     | Inverted Forbidden Library, the Schmoo/Crissaegrim drop area; HUD 403/234.
+28. From Axe Knight to Zombie | sotn-bestiary.jpg          | OK     | Master Librarian Enemy List (bestiary) panel, Malachi No.126 entry (LV39/HP450, drops, resistances). (Verified: trophy = complete the Enemy List.)
+29. Scientific Progress goes BOINK! | sotn-frankenstein.jpg | OK     | Master Librarian buy-item shop menu (price list, ATT/DEF panel, gold) - the shop where the 500,000-gold Duplicator is purchased. (Verified: trophy = buy the Duplicator, not a Frankenstein boss.)
+30. Technicolor Dreams         | sotn-josephs-cloak.jpg     | OK     | System menu cloak-color RGB sliders (Lining/Exterior) with two Alucard cloak preview sprites.
+31. Map Legend                 | sotn-full-2006.jpg         | REUSED | Full map at 200.6% completion (existing file, not re-downloaded).
+32. Shafted                    | sotn-shaft-boss.jpg        | OK     | Shaft's boss-introduction dialogue frame ("priest called Shaft..."), Inverted Castle Center; arena identical in Richter mode.
+
+SUMMARY: 32 trophies | 27 screenshots downloaded & verified | 1 reused map | 4 skipped (4, 5, 12, 14) with no compliant in-game frame available after refined attempts.
